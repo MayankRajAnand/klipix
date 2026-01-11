@@ -1,13 +1,31 @@
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Play, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import heroVisual from "@/assets/hero-visual.png";
+import { useState, useEffect } from "react";
 
 interface HeroSectionProps {
   onOpenAuth: (mode: "login" | "signup") => void;
 }
 
+const taglines = [
+  "Create Viral Shorts from Long Videos",
+  "Generate AI-Powered Faceless Videos",
+  "Auto-Create Scroll-Stopping Clips",
+  "Transform Podcasts into Viral Reels",
+  "Generate Viral Scripts in Seconds",
+];
+
 const HeroSection = ({ onOpenAuth }: HeroSectionProps) => {
+  const [currentTaglineIndex, setCurrentTaglineIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTaglineIndex((prev) => (prev + 1) % taglines.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
+
   const platforms = [
     { name: "YouTube", icon: "📺" },
     { name: "TikTok", icon: "🎵" },
@@ -48,16 +66,27 @@ const HeroSection = ({ onOpenAuth }: HeroSectionProps) => {
             </span>
           </motion.div>
 
-          {/* Headline */}
-          <motion.h1
+          {/* Headline with Typing Animation */}
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="font-display text-4xl md:text-6xl lg:text-7xl font-bold text-foreground mb-6 leading-tight"
+            className="font-display text-4xl md:text-6xl lg:text-7xl font-bold text-foreground mb-6 leading-tight min-h-[1.2em] md:min-h-[2.4em]"
           >
-            Create <span className="gradient-text">Viral Shorts</span> from
-            <br className="hidden md:block" /> Long Videos — Instantly
-          </motion.h1>
+            <AnimatePresence mode="wait">
+              <motion.span
+                key={currentTaglineIndex}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.5 }}
+                className="block"
+              >
+                <span className="gradient-text">{taglines[currentTaglineIndex]}</span>
+              </motion.span>
+            </AnimatePresence>
+            <span className="block mt-2">— Instantly with AI</span>
+          </motion.div>
 
           {/* Subheadline */}
           <motion.p
@@ -66,8 +95,8 @@ const HeroSection = ({ onOpenAuth }: HeroSectionProps) => {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10"
           >
-            AI finds the best moments, adds captions, and formats for every
-            platform. Turn hours of content into scroll-stopping clips.
+            AI-powered video editor that finds viral moments, adds captions, and
+            formats for every platform. Turn hours of content into scroll-stopping clips.
           </motion.p>
 
           {/* CTAs */}
