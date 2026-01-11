@@ -59,7 +59,7 @@ const duplicatedTestimonials = [...testimonials, ...testimonials, ...testimonial
 
 const TestimonialsSection = () => {
   return (
-    <section id="testimonials" className="py-24 md:py-32 relative overflow-hidden">
+    <section id="testimonials" className="py-16 md:py-24 lg:py-32 relative overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 section-fade" />
 
@@ -72,30 +72,34 @@ const TestimonialsSection = () => {
           transition={{ duration: 0.5 }}
           className="text-center mb-8 px-4"
         >
-          {/* Trust Badge */}
-          <div className="flex items-center justify-center gap-4 mb-6 flex-wrap">
+          {/* Trust Badge - Mobile Optimized */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 mb-6">
             <div className="flex items-center gap-1">
               {[...Array(5)].map((_, i) => (
-                <Star key={i} className="w-5 h-5 fill-primary text-primary" />
+                <Star key={i} className="w-4 h-4 sm:w-5 sm:h-5 fill-primary text-primary" />
               ))}
-              <span className="ml-2 text-foreground font-semibold">4.8</span>
+              <span className="ml-2 text-foreground font-semibold text-sm sm:text-base">4.8</span>
             </div>
-            <span className="text-muted-foreground hidden sm:inline">|</span>
-            <span className="text-muted-foreground text-sm sm:text-base">500+ five-star reviews</span>
-            <span className="text-muted-foreground hidden sm:inline">|</span>
-            <span className="text-muted-foreground text-sm sm:text-base">Trusted by <span className="text-foreground font-semibold">10K+</span> creators</span>
+            <div className="flex items-center gap-2 sm:gap-4">
+              <span className="text-muted-foreground hidden sm:inline">|</span>
+              <span className="text-muted-foreground text-xs sm:text-sm">500+ reviews</span>
+              <span className="text-muted-foreground">|</span>
+              <span className="text-muted-foreground text-xs sm:text-sm">
+                <span className="text-foreground font-semibold">10K+</span> creators
+              </span>
+            </div>
           </div>
 
-          <h2 className="font-display text-3xl md:text-5xl font-bold text-foreground mb-4">
+          <h2 className="font-display text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-3 sm:mb-4 px-2">
             Don't Just Take Our <span className="gradient-text">Word For It</span>
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto">
             Here's what our users say
           </p>
         </motion.div>
 
         {/* Infinite Marquee - Row 1 (left to right) */}
-        <div className="relative mb-6 overflow-hidden">
+        <div className="relative mb-4 sm:mb-6 overflow-hidden">
           <div className="flex">
             <div className="flex animate-marquee">
               {duplicatedTestimonials.map((testimonial, index) => (
@@ -108,13 +112,13 @@ const TestimonialsSection = () => {
               ))}
             </div>
           </div>
-          {/* Gradient Fade Edges */}
-          <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
-          <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
+          {/* Gradient Fade Edges - Smaller on mobile */}
+          <div className="absolute left-0 top-0 bottom-0 w-8 sm:w-16 md:w-32 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
+          <div className="absolute right-0 top-0 bottom-0 w-8 sm:w-16 md:w-32 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
         </div>
 
-        {/* Infinite Marquee - Row 2 (right to left) */}
-        <div className="relative overflow-hidden">
+        {/* Infinite Marquee - Row 2 (right to left) - Hidden on small mobile */}
+        <div className="relative overflow-hidden hidden sm:block">
           <div className="flex">
             <div className="flex animate-marquee-reverse">
               {duplicatedTestimonials.slice().reverse().map((testimonial, index) => (
@@ -128,8 +132,8 @@ const TestimonialsSection = () => {
             </div>
           </div>
           {/* Gradient Fade Edges */}
-          <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
-          <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
+          <div className="absolute left-0 top-0 bottom-0 w-16 md:w-32 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
+          <div className="absolute right-0 top-0 bottom-0 w-16 md:w-32 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
         </div>
       </div>
     </section>
@@ -147,31 +151,31 @@ interface TestimonialCardProps {
 }
 
 const TestimonialCard = ({ testimonial }: TestimonialCardProps) => (
-  <div className="flex-shrink-0 w-[380px] mx-3">
-    <div className="glass-card p-6 h-full relative">
+  <div className="flex-shrink-0 w-[280px] sm:w-[320px] md:w-[380px] mx-2 sm:mx-3">
+    <div className="glass-card p-4 sm:p-5 md:p-6 h-full relative">
       {testimonial.badge && (
-        <div className="absolute -top-3 left-6">
-          <span className="btn-gradient px-3 py-1 rounded-full text-xs font-semibold text-primary-foreground">
+        <div className="absolute -top-2 sm:-top-3 left-4 sm:left-6">
+          <span className="btn-gradient px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-semibold text-primary-foreground">
             {testimonial.badge}
           </span>
         </div>
       )}
-      <div className="flex items-start gap-4">
+      <div className="flex items-start gap-3 sm:gap-4">
         <img
           src={testimonial.avatar}
           alt={testimonial.name}
-          className="w-14 h-14 rounded-full object-cover border-2 border-primary/30"
+          className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-full object-cover border-2 border-primary/30"
         />
         <div className="flex-1 min-w-0">
-          <h4 className="font-display font-semibold text-foreground">
+          <h4 className="font-display font-semibold text-foreground text-sm sm:text-base truncate">
             {testimonial.name}
           </h4>
-          <p className="text-sm text-primary font-medium">
+          <p className="text-xs sm:text-sm text-primary font-medium truncate">
             {testimonial.role}
           </p>
         </div>
       </div>
-      <blockquote className="mt-4 text-muted-foreground text-sm leading-relaxed">
+      <blockquote className="mt-3 sm:mt-4 text-muted-foreground text-xs sm:text-sm leading-relaxed line-clamp-3">
         "{testimonial.quote}"
       </blockquote>
     </div>
