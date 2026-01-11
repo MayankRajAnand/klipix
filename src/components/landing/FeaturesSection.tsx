@@ -73,8 +73,52 @@ const FeaturesSection = () => {
 
   return (
     <section id="features" className="py-24 md:py-32 relative overflow-hidden">
-      {/* Background */}
+      {/* Background with floating objects */}
       <div className="absolute inset-0 section-fade" />
+      
+      {/* Floating decorative shapes */}
+      <motion.div 
+        className="absolute top-20 left-[10%] w-16 h-16 rounded-full border border-primary/20 opacity-40"
+        animate={{ y: [0, -20, 0], rotate: [0, 180, 360] }}
+        transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <motion.div 
+        className="absolute top-32 right-[15%] w-8 h-8 bg-primary/10 rounded-lg opacity-50"
+        animate={{ y: [0, 15, 0], rotate: [0, -90, 0] }}
+        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <motion.div 
+        className="absolute top-1/3 left-[5%] w-6 h-6 bg-accent/15 rounded-full opacity-60"
+        animate={{ y: [0, 25, 0], x: [0, 10, 0] }}
+        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <motion.div 
+        className="absolute top-1/2 right-[8%] w-12 h-12 border-2 border-accent/20 rounded-xl opacity-40"
+        animate={{ y: [0, -30, 0], rotate: [0, 45, 0] }}
+        transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <motion.div 
+        className="absolute bottom-1/3 left-[12%] w-10 h-10 bg-primary/8 rounded-full opacity-50"
+        animate={{ y: [0, 20, 0], scale: [1, 1.2, 1] }}
+        transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <motion.div 
+        className="absolute bottom-20 right-[20%] w-4 h-4 bg-accent/20 rounded-full opacity-70"
+        animate={{ y: [0, -15, 0], x: [0, -8, 0] }}
+        transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <motion.div 
+        className="absolute bottom-1/4 left-[25%] w-14 h-14 border border-primary/15 rounded-2xl opacity-30"
+        animate={{ rotate: [0, 90, 0], scale: [1, 0.9, 1] }}
+        transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <motion.div 
+        className="absolute top-2/3 right-[25%] w-5 h-5 bg-primary/12 rounded-lg opacity-50"
+        animate={{ y: [0, 12, 0], rotate: [0, 180, 360] }}
+        transition={{ duration: 11, repeat: Infinity, ease: "easeInOut" }}
+      />
+      
+      {/* Blurred background blobs */}
       <div className="absolute top-1/2 left-0 w-[400px] h-[400px] rounded-full bg-primary/10 blur-[120px]" />
       <div className="absolute bottom-0 right-0 w-[400px] h-[400px] rounded-full bg-accent/10 blur-[120px]" />
 
