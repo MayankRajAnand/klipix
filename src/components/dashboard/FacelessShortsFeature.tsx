@@ -13,38 +13,46 @@ import {
   ArrowRight,
   Lightbulb
 } from 'lucide-react';
+import { useFacelessShorts, useScriptGeneration } from '@/hooks/useVideoProcessing';
+import { VISUAL_STYLES, VOICE_OPTIONS, TOPIC_SUGGESTIONS } from '@/constants/videoOptions';
+import type { VisualStyle } from '@/types/video';
 
 const FacelessShortsFeature = () => {
   const [topic, setTopic] = useState('');
   const [script, setScript] = useState('');
-  const [selectedStyle, setSelectedStyle] = useState<string | null>(null);
-  const [isGenerating, setIsGenerating] = useState(false);
+  const [selectedStyle, setSelectedStyle] = useState<VisualStyle | null>(null);
+  const [selectedVoice, setSelectedVoice] = useState<string | null>(null);
+  
+  const { isProcessing, process, error } = useFacelessShorts();
+  const { isGenerating, generate: generateScript } = useScriptGeneration();
 
-  const styles = [
-    { id: 'realistic', label: 'Realistic', icon: Image },
-    { id: 'animated', label: 'Animated', icon: Sparkles },
-    { id: 'stock', label: 'Stock Footage', icon: Wand2 },
-  ];
-
-  const voiceOptions = [
-    { id: 'male-1', label: 'Male Voice 1' },
-    { id: 'male-2', label: 'Male Voice 2' },
-    { id: 'female-1', label: 'Female Voice 1' },
-    { id: 'female-2', label: 'Female Voice 2' },
-  ];
-
-  const handleGenerate = async () => {
-    setIsGenerating(true);
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    setIsGenerating(false);
+  const styleIcons = {
+    realistic: Image,
+    animated: Sparkles,
+    stock: Wand2,
   };
 
-  const topicSuggestions = [
-    'Motivational quotes',
-    'Fun facts about science',
-    'Life hacks for productivity',
-    'Daily affirmations',
-  ];
+  const handleGenerateScript = async () => {
+    if (topic) {
+      const generatedScript = await generateScript(topic);
+      if (generatedScript) {
+        setScript(generatedScript);
+      }
+    }
+  };
+
+  const handleGenerate = async () => {
+    if (!selectedStyle || !selectedVoice) return;
+    
+    await process({
+      topic,
+      script: script || undefined,
+      visualStyle: selectedStyle,
+      voiceId: selectedVoice,
+    });
+  };
+
+  const isDisabled = isProcessing || !topic || !selectedStyle || !selectedVoice;
 
   return (
     <div className="space-y-8">
@@ -73,7 +81,7 @@ const FacelessShortsFeature = () => {
           />
         </div>
         <div className="flex flex-wrap gap-2">
-          {topicSuggestions.map((suggestion) => (
+          {TOPIC_SUGGESTIONS.map((suggestion) => (
             <button
               key={suggestion}
               onClick={() => setTopic(suggestion)}
@@ -89,9 +97,15 @@ const FacelessShortsFeature = () => {
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <Label htmlFor="script">Script (Optional)</Label>
-          <Button variant="ghost" size="sm" className="text-primary gap-1 h-8">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="text-primary gap-1 h-8"
+            onClick={handleGenerateScript}
+            disabled={!topic || isGenerating}
+          >
             <Wand2 className="w-4 h-4" />
-            Auto-generate
+            {isGenerating ? 'Generating...' : 'Auto-generate'}
           </Button>
         </div>
         <Textarea
@@ -107,26 +121,29 @@ const FacelessShortsFeature = () => {
       <div className="space-y-3">
         <Label>Visual Style</Label>
         <div className="grid grid-cols-3 gap-3">
-          {styles.map((style) => (
-            <button
-              key={style.id}
-              onClick={() => setSelectedStyle(style.id)}
-              className={`flex flex-col items-center gap-2 p-4 rounded-xl border transition-all ${
-                selectedStyle === style.id
-                  ? 'border-primary bg-primary/10'
-                  : 'border-border bg-secondary/30 hover:border-primary/30'
-              }`}
-            >
-              <style.icon className={`w-6 h-6 ${
-                selectedStyle === style.id ? 'text-primary' : 'text-muted-foreground'
-              }`} />
-              <span className={`text-sm font-medium ${
-                selectedStyle === style.id ? 'text-foreground' : 'text-muted-foreground'
-              }`}>
-                {style.label}
-              </span>
-            </button>
-          ))}
+          {VISUAL_STYLES.map((style) => {
+            const IconComponent = styleIcons[style.id];
+            return (
+              <button
+                key={style.id}
+                onClick={() => setSelectedStyle(style.id)}
+                className={`flex flex-col items-center gap-2 p-4 rounded-xl border transition-all ${
+                  selectedStyle === style.id
+                    ? 'border-primary bg-primary/10'
+                    : 'border-border bg-secondary/30 hover:border-primary/30'
+                }`}
+              >
+                <IconComponent className={`w-6 h-6 ${
+                  selectedStyle === style.id ? 'text-primary' : 'text-muted-foreground'
+                }`} />
+                <span className={`text-sm font-medium ${
+                  selectedStyle === style.id ? 'text-foreground' : 'text-muted-foreground'
+                }`}>
+                  {style.label}
+                </span>
+              </button>
+            );
+          })}
         </div>
       </div>
 
@@ -137,10 +154,15 @@ const FacelessShortsFeature = () => {
           AI Voice
         </Label>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-          {voiceOptions.map((voice) => (
+          {VOICE_OPTIONS.map((voice) => (
             <button
               key={voice.id}
-              className="px-4 py-2 rounded-lg border border-border bg-secondary/30 text-sm text-muted-foreground hover:border-primary/30 hover:text-foreground transition-all"
+              onClick={() => setSelectedVoice(voice.id)}
+              className={`px-4 py-2 rounded-lg border text-sm transition-all ${
+                selectedVoice === voice.id
+                  ? 'border-primary bg-primary/10 text-foreground'
+                  : 'border-border bg-secondary/30 text-muted-foreground hover:border-primary/30 hover:text-foreground'
+              }`}
             >
               {voice.label}
             </button>
@@ -162,15 +184,20 @@ const FacelessShortsFeature = () => {
         </Button>
       </div>
 
+      {/* Error Display */}
+      {error && (
+        <p className="text-sm text-destructive">{error}</p>
+      )}
+
       {/* Generate Button */}
       <Button
         variant="gradient"
         size="lg"
         onClick={handleGenerate}
-        disabled={isGenerating || !topic}
+        disabled={isDisabled}
         className="w-full sm:w-auto gap-2"
       >
-        {isGenerating ? (
+        {isProcessing ? (
           <>
             <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-primary-foreground" />
             Generating...

@@ -13,14 +13,15 @@ import {
   ArrowRight,
   CheckCircle2
 } from 'lucide-react';
-
-type InputMode = 'url' | 'upload';
+import { useConvertShorts, useFileUpload } from '@/hooks/useVideoProcessing';
+import type { InputMode } from '@/types/video';
 
 const ConvertShortsFeature = () => {
   const [inputMode, setInputMode] = useState<InputMode>('url');
   const [youtubeUrl, setYoutubeUrl] = useState('');
-  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
-  const [isProcessing, setIsProcessing] = useState(false);
+  
+  const { uploadedFile, setUploadedFile } = useFileUpload();
+  const { isProcessing, process, error } = useConvertShorts();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -30,10 +31,11 @@ const ConvertShortsFeature = () => {
   };
 
   const handleConvert = async () => {
-    setIsProcessing(true);
-    // Simulate processing - this would be replaced with actual API call
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    setIsProcessing(false);
+    await process({
+      inputMode,
+      youtubeUrl: inputMode === 'url' ? youtubeUrl : undefined,
+      videoFile: inputMode === 'upload' ? uploadedFile ?? undefined : undefined,
+    });
   };
 
   const features = [
@@ -41,6 +43,8 @@ const ConvertShortsFeature = () => {
     { icon: Film, text: 'Vertical format (9:16)' },
     { icon: Sparkles, text: 'AI-enhanced clips' },
   ];
+
+  const isDisabled = isProcessing || (inputMode === 'url' ? !youtubeUrl : !uploadedFile);
 
   return (
     <div className="space-y-8">
@@ -143,6 +147,11 @@ const ConvertShortsFeature = () => {
         )}
       </div>
 
+      {/* Error Display */}
+      {error && (
+        <p className="text-sm text-destructive">{error}</p>
+      )}
+
       {/* Features List */}
       <div className="flex flex-wrap gap-4">
         {features.map((feature, index) => (
@@ -164,7 +173,7 @@ const ConvertShortsFeature = () => {
         variant="gradient"
         size="lg"
         onClick={handleConvert}
-        disabled={isProcessing || (inputMode === 'url' ? !youtubeUrl : !uploadedFile)}
+        disabled={isDisabled}
         className="w-full sm:w-auto gap-2"
       >
         {isProcessing ? (

@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { 
@@ -12,12 +11,17 @@ import {
   AlignCenter,
   AlignLeft
 } from 'lucide-react';
+import { useAutoCaptions, useFileUpload } from '@/hooks/useVideoProcessing';
+import { CAPTION_STYLES, CAPTION_COLORS } from '@/constants/videoOptions';
+import type { CaptionStyle, CaptionPosition } from '@/types/video';
 
 const AutoCaptionFeature = () => {
-  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
-  const [selectedStyle, setSelectedStyle] = useState('viral');
-  const [selectedPosition, setSelectedPosition] = useState('center');
-  const [isProcessing, setIsProcessing] = useState(false);
+  const [selectedStyle, setSelectedStyle] = useState<CaptionStyle>('viral');
+  const [selectedColor, setSelectedColor] = useState('white');
+  const [selectedPosition, setSelectedPosition] = useState<CaptionPosition>('center');
+  
+  const { uploadedFile, setUploadedFile } = useFileUpload();
+  const { isProcessing, process, error } = useAutoCaptions();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -27,24 +31,17 @@ const AutoCaptionFeature = () => {
   };
 
   const handleAddCaptions = async () => {
-    setIsProcessing(true);
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    setIsProcessing(false);
+    if (!uploadedFile) return;
+    
+    await process({
+      videoFile: uploadedFile,
+      style: selectedStyle,
+      colorPresetId: selectedColor,
+      position: selectedPosition,
+    });
   };
 
-  const captionStyles = [
-    { id: 'viral', label: 'Viral Pop', preview: 'Bold, animated' },
-    { id: 'minimal', label: 'Minimal', preview: 'Clean, simple' },
-    { id: 'karaoke', label: 'Karaoke', preview: 'Word-by-word' },
-    { id: 'subtitle', label: 'Subtitle', preview: 'Classic style' },
-  ];
-
-  const colorPresets = [
-    { id: 'white', color: '#FFFFFF', label: 'White' },
-    { id: 'yellow', color: '#FFFF00', label: 'Yellow' },
-    { id: 'cyan', color: '#00FFFF', label: 'Cyan' },
-    { id: 'gradient', color: 'linear-gradient(135deg, #8B5CF6, #00D4FF)', label: 'Gradient' },
-  ];
+  const isDisabled = isProcessing || !uploadedFile;
 
   return (
     <div className="space-y-8">
@@ -102,7 +99,7 @@ const AutoCaptionFeature = () => {
       <div className="space-y-3">
         <Label>Caption Style</Label>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          {captionStyles.map((style) => (
+          {CAPTION_STYLES.map((style) => (
             <button
               key={style.id}
               onClick={() => setSelectedStyle(style.id)}
@@ -133,11 +130,14 @@ const AutoCaptionFeature = () => {
           Caption Color
         </Label>
         <div className="flex gap-3">
-          {colorPresets.map((preset) => (
+          {CAPTION_COLORS.map((preset) => (
             <button
               key={preset.id}
               title={preset.label}
-              className="w-10 h-10 rounded-full border-2 border-border hover:border-primary transition-all"
+              onClick={() => setSelectedColor(preset.id)}
+              className={`w-10 h-10 rounded-full border-2 transition-all ${
+                selectedColor === preset.id ? 'border-primary scale-110' : 'border-border hover:border-primary'
+              }`}
               style={{ 
                 background: preset.color.includes('gradient') ? preset.color : preset.color
               }}
@@ -188,12 +188,17 @@ const AutoCaptionFeature = () => {
         </div>
       </div>
 
+      {/* Error Display */}
+      {error && (
+        <p className="text-sm text-destructive">{error}</p>
+      )}
+
       {/* Add Captions Button */}
       <Button
         variant="gradient"
         size="lg"
         onClick={handleAddCaptions}
-        disabled={isProcessing || !uploadedFile}
+        disabled={isDisabled}
         className="w-full sm:w-auto gap-2"
       >
         {isProcessing ? (
