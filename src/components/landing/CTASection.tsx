@@ -1,12 +1,11 @@
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import { ArrowRight, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-interface CTASectionProps {
-  onOpenAuth: (mode: "login" | "signup") => void;
-}
+const CTASection = () => {
+  const navigate = useNavigate();
 
-const CTASection = ({ onOpenAuth }: CTASectionProps) => {
   return (
     <section className="py-24 md:py-32 relative overflow-hidden">
       {/* Background */}
@@ -41,7 +40,7 @@ const CTASection = ({ onOpenAuth }: CTASectionProps) => {
             <Button
               variant="gradient"
               size="xl"
-              onClick={() => onOpenAuth("signup")}
+              onClick={() => navigate("/auth")}
             >
               Get Started Free
               <ArrowRight className="w-5 h-5" />

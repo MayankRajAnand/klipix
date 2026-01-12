@@ -1,14 +1,12 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-interface NavbarProps {
-  onOpenAuth: (mode: "login" | "signup") => void;
-}
-
-const Navbar = ({ onOpenAuth }: NavbarProps) => {
+const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
 
   const navLinks = [
     { label: "Features", href: "#features" },
@@ -54,14 +52,14 @@ const Navbar = ({ onOpenAuth }: NavbarProps) => {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => onOpenAuth("login")}
+              onClick={() => navigate("/auth")}
             >
               Log in
             </Button>
             <Button
               variant="gradient"
               size="sm"
-              onClick={() => onOpenAuth("signup")}
+              onClick={() => navigate("/auth")}
             >
               Get Started Free
             </Button>
@@ -101,7 +99,7 @@ const Navbar = ({ onOpenAuth }: NavbarProps) => {
                     variant="ghost"
                     onClick={() => {
                       setIsOpen(false);
-                      onOpenAuth("login");
+                      navigate("/auth");
                     }}
                   >
                     Log in
@@ -110,7 +108,7 @@ const Navbar = ({ onOpenAuth }: NavbarProps) => {
                     variant="gradient"
                     onClick={() => {
                       setIsOpen(false);
-                      onOpenAuth("signup");
+                      navigate("/auth");
                     }}
                   >
                     Get Started Free
