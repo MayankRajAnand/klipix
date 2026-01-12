@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -11,9 +11,13 @@ import {
   Clock, 
   Film,
   ArrowRight,
-  CheckCircle2
+  CheckCircle2,
+  Loader2,
+  X,
+  User
 } from 'lucide-react';
 import { useConvertShorts, useFileUpload } from '@/hooks/useVideoProcessing';
+import { useYouTubeMetadata } from '@/hooks/useYouTubeMetadata';
 import type { InputMode } from '@/types/video';
 
 const ConvertShortsFeature = () => {
@@ -22,12 +26,35 @@ const ConvertShortsFeature = () => {
   
   const { uploadedFile, setUploadedFile } = useFileUpload();
   const { isProcessing, process, error } = useConvertShorts();
+  const { 
+    isLoading: isLoadingMetadata, 
+    metadata, 
+    error: metadataError, 
+    fetchMetadata,
+    reset: resetMetadata 
+  } = useYouTubeMetadata();
+
+  // Debounced fetch when URL changes
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (youtubeUrl && inputMode === 'url') {
+        fetchMetadata(youtubeUrl);
+      }
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [youtubeUrl, inputMode, fetchMetadata]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       setUploadedFile(file);
     }
+  };
+
+  const handleClearUrl = () => {
+    setYoutubeUrl('');
+    resetMetadata();
   };
 
   const handleConvert = async () => {
@@ -44,7 +71,7 @@ const ConvertShortsFeature = () => {
     { icon: Sparkles, text: 'AI-enhanced clips' },
   ];
 
-  const isDisabled = isProcessing || (inputMode === 'url' ? !youtubeUrl : !uploadedFile);
+  const isDisabled = isProcessing || (inputMode === 'url' ? !youtubeUrl || !metadata : !uploadedFile);
 
   return (
     <div className="space-y-8">
@@ -61,7 +88,10 @@ const ConvertShortsFeature = () => {
       {/* Input Mode Toggle */}
       <div className="flex gap-2 p-1 bg-secondary/50 rounded-xl w-fit">
         <button
-          onClick={() => setInputMode('url')}
+          onClick={() => {
+            setInputMode('url');
+            setUploadedFile(null);
+          }}
           className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
             inputMode === 'url'
               ? 'bg-primary text-primary-foreground'
@@ -72,7 +102,10 @@ const ConvertShortsFeature = () => {
           YouTube URL
         </button>
         <button
-          onClick={() => setInputMode('upload')}
+          onClick={() => {
+            setInputMode('upload');
+            handleClearUrl();
+          }}
           className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
             inputMode === 'upload'
               ? 'bg-primary text-primary-foreground'
@@ -87,21 +120,89 @@ const ConvertShortsFeature = () => {
       {/* Input Section */}
       <div className="space-y-4">
         {inputMode === 'url' ? (
-          <div className="space-y-2">
-            <Label htmlFor="youtube-url">YouTube Video URL</Label>
-            <div className="flex gap-3">
-              <div className="relative flex-1">
-                <Youtube className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-red-500" />
-                <Input
-                  id="youtube-url"
-                  type="url"
-                  placeholder="https://youtube.com/watch?v=..."
-                  value={youtubeUrl}
-                  onChange={(e) => setYoutubeUrl(e.target.value)}
-                  className="pl-11 h-12 bg-secondary/50 border-border focus:border-primary"
-                />
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="youtube-url">YouTube Video URL</Label>
+              <div className="flex gap-3">
+                <div className="relative flex-1">
+                  <Youtube className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-red-500" />
+                  <Input
+                    id="youtube-url"
+                    type="url"
+                    placeholder="https://youtube.com/watch?v=..."
+                    value={youtubeUrl}
+                    onChange={(e) => setYoutubeUrl(e.target.value)}
+                    className="pl-11 pr-10 h-12 bg-secondary/50 border-border focus:border-primary"
+                  />
+                  {youtubeUrl && (
+                    <button
+                      onClick={handleClearUrl}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
+
+            {/* Loading State */}
+            {isLoadingMetadata && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="flex items-center gap-3 p-4 rounded-xl bg-secondary/30 border border-border"
+              >
+                <Loader2 className="w-5 h-5 text-primary animate-spin" />
+                <span className="text-sm text-muted-foreground">Fetching video info...</span>
+              </motion.div>
+            )}
+
+            {/* Video Preview */}
+            {metadata && !isLoadingMetadata && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="flex gap-4 p-4 rounded-xl bg-secondary/30 border border-primary/30"
+              >
+                <div className="relative w-40 sm:w-48 flex-shrink-0">
+                  <img
+                    src={metadata.thumbnailUrl}
+                    alt={metadata.title}
+                    className="w-full aspect-video object-cover rounded-lg"
+                  />
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-full bg-red-600 flex items-center justify-center">
+                      <div className="w-0 h-0 border-t-[6px] border-t-transparent border-l-[10px] border-l-white border-b-[6px] border-b-transparent ml-1" />
+                    </div>
+                  </div>
+                </div>
+                <div className="flex flex-col justify-center min-w-0">
+                  <div className="flex items-center gap-2 mb-1">
+                    <CheckCircle2 className="w-4 h-4 text-green-500 flex-shrink-0" />
+                    <span className="text-xs text-green-500 font-medium">Video found</span>
+                  </div>
+                  <h3 className="font-medium text-foreground line-clamp-2 text-sm sm:text-base">
+                    {metadata.title}
+                  </h3>
+                  <div className="flex items-center gap-2 mt-2 text-xs text-muted-foreground">
+                    <User className="w-3 h-3" />
+                    <span className="truncate">{metadata.authorName}</span>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {/* Metadata Error */}
+            {metadataError && !isLoadingMetadata && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="p-4 rounded-xl bg-destructive/10 border border-destructive/30"
+              >
+                <p className="text-sm text-destructive">{metadataError}</p>
+              </motion.div>
+            )}
           </div>
         ) : (
           <div className="space-y-2">
