@@ -1,0 +1,1 @@
+export const TOTAL_INITIAL_CREDITS = 50;
