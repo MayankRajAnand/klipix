@@ -1,4 +1,0 @@
-project_id = "hfemnvhqrzbqlarsqdqb"
-
-[functions.youtube-metadata]
-verify_jwt = false
