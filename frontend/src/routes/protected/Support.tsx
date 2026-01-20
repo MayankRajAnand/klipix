@@ -337,7 +337,7 @@ const Support = () => {
                             className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
                         >
                             <Mail className="w-4 h-4" />
-                            support@klipix.com
+                            support@klipix.io
                         </a>
                     </div>
                 </div>
