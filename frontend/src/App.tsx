@@ -9,11 +9,15 @@ import LoginPage from '@/routes/public/LoginPage';
 import SignUpPage from '@/routes/public/SignUpPage';
 import Dashboard from '@/routes/protected/Dashboard';
 import FacelessShorts from '@/routes/protected/create/FacelessShorts';
+import ScriptToVideo from '@/routes/protected/create/faceless/ScriptToVideo';
+import ScriptToVideoReview from '@/routes/protected/create/faceless/ScriptToVideoReview';
+import SplitVideo from '@/routes/protected/create/faceless/SplitVideo';
+import FakeTextStory from '@/routes/protected/create/faceless/FakeTextStory';
 import SeriesShorts from '@/routes/protected/create/SeriesShorts';
 import Projects from '@/routes/protected/Projects';
 import Analytics from '@/routes/protected/Analytics';
 import SocialAccounts from '@/routes/protected/SocialAccounts';
-import Usage from '@/routes/protected/Usage';
+import CreditsAndUsage from '@/routes/protected/CreditsAndUsage';
 import Support from '@/routes/protected/Support';
 import Profile from '@/routes/protected/Profile';
 import Billing from '@/routes/protected/Billing';
@@ -42,6 +46,38 @@ function App() {
             element={
               <ProtectedRoute>
                 <FacelessShorts />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/create/faceless/script-to-video"
+            element={
+              <ProtectedRoute>
+                <ScriptToVideo />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/create/faceless/script-to-video/review"
+            element={
+              <ProtectedRoute>
+                <ScriptToVideoReview />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/create/faceless/split-video"
+            element={
+              <ProtectedRoute>
+                <SplitVideo />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/create/faceless/fake-text"
+            element={
+              <ProtectedRoute>
+                <FakeTextStory />
               </ProtectedRoute>
             }
           />
@@ -78,10 +114,10 @@ function App() {
             }
           />
           <Route
-            path="/usage"
+            path="/credits-and-usage"
             element={
               <ProtectedRoute>
-                <Usage />
+                <CreditsAndUsage />
               </ProtectedRoute>
             }
           />
