@@ -9,6 +9,9 @@ import LoginPage from '@/routes/public/LoginPage';
 import SignUpPage from '@/routes/public/SignUpPage';
 import Dashboard from '@/routes/protected/Dashboard';
 import FacelessShorts from '@/routes/protected/create/FacelessShorts';
+import ScriptToVideo from '@/routes/protected/create/faceless/ScriptToVideo';
+import SplitVideo from '@/routes/protected/create/faceless/SplitVideo';
+import FakeTextStory from '@/routes/protected/create/faceless/FakeTextStory';
 import SeriesShorts from '@/routes/protected/create/SeriesShorts';
 import Projects from '@/routes/protected/Projects';
 import Analytics from '@/routes/protected/Analytics';
@@ -42,6 +45,30 @@ function App() {
             element={
               <ProtectedRoute>
                 <FacelessShorts />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/create/faceless/script-to-video"
+            element={
+              <ProtectedRoute>
+                <ScriptToVideo />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/create/faceless/split-video"
+            element={
+              <ProtectedRoute>
+                <SplitVideo />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/create/faceless/fake-text"
+            element={
+              <ProtectedRoute>
+                <FakeTextStory />
               </ProtectedRoute>
             }
           />
