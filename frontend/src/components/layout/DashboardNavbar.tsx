@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { User, LogOut, CreditCard, Activity, Gift, ArrowLeft, Menu } from 'lucide-react';
+import { User, LogOut, CreditCard, Zap, Gift, ArrowLeft, Menu } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/common/theme-toggle';
@@ -142,7 +142,7 @@ const DashboardNavbar = ({ onMenuToggle }: DashboardNavbarProps) => {
                     {/* Credits Display */}
                     {credits !== null && (
                         <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-muted/50 border border-border/50">
-                            <Activity className="w-4 h-4 text-primary" />
+                            <Zap className="w-4 h-4 text-primary" />
                             <span className="text-sm font-medium text-foreground">
                                 {credits} credits
                             </span>

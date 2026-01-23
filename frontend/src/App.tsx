@@ -13,7 +13,7 @@ import SeriesShorts from '@/routes/protected/create/SeriesShorts';
 import Projects from '@/routes/protected/Projects';
 import Analytics from '@/routes/protected/Analytics';
 import SocialAccounts from '@/routes/protected/SocialAccounts';
-import Usage from '@/routes/protected/Usage';
+import CreditsAndUsage from '@/routes/protected/CreditsAndUsage';
 import Support from '@/routes/protected/Support';
 import Profile from '@/routes/protected/Profile';
 import Billing from '@/routes/protected/Billing';
@@ -78,10 +78,10 @@ function App() {
             }
           />
           <Route
-            path="/usage"
+            path="/credits-and-usage"
             element={
               <ProtectedRoute>
-                <Usage />
+                <CreditsAndUsage />
               </ProtectedRoute>
             }
           />

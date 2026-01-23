@@ -8,7 +8,7 @@ import {
     Sparkles,
     Layers,
     ChevronDown,
-    Activity,
+    Zap,
     HeadphonesIcon
 } from 'lucide-react';
 import KlipixLogo from '@/assets/Klipix.svg';
@@ -30,7 +30,7 @@ const distributionItems: NavItem[] = [
 
 // Configuration & admin - low frequency
 const adminItems: NavItem[] = [
-    { label: 'Credits & Usage', icon: Activity, path: '/usage' },
+    { label: 'Credits & Usage', icon: Zap, path: '/credits-and-usage' },
     { label: 'Support', icon: HeadphonesIcon, path: '/support' },
 ];
 
