@@ -36,13 +36,12 @@ const Navbar = () => {
                         </span>
                     </Link>
 
-                    {/* Desktop Navigation */}
-                    <div className="hidden lg:flex items-center gap-8">
+                    <div className="hidden lg:flex items-center gap-2">
                         {NAV_LINKS.map((link) => (
                             <a
                                 key={link.label}
                                 href={link.href}
-                                className="text-muted-foreground hover:text-foreground transition-colors duration-200 text-md font-medium"
+                                className="text-muted-foreground hover:text-foreground hover:bg-hover-highlight transition-colors duration-200 text-sm font-medium px-3 py-2 rounded-md"
                             >
                                 {link.label}
                             </a>
@@ -112,12 +111,12 @@ const Navbar = () => {
                 {/* Mobile Menu */}
                 {isOpen && (
                     <div className="lg:hidden border-t border-border/50">
-                        <div className="py-4 space-y-4">
+                        <div className="py-4 space-y-2">
                             {NAV_LINKS.map((link) => (
                                 <a
                                     key={link.label}
                                     href={link.href}
-                                    className="block text-muted-foreground hover:text-foreground transition-colors duration-200 text-sm font-medium"
+                                    className="block text-muted-foreground hover:text-foreground hover:bg-hover-highlight transition-colors duration-200 text-sm font-medium px-3 py-2 rounded-md"
                                     onClick={() => setIsOpen(false)}
                                 >
                                     {link.label}

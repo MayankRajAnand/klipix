@@ -34,7 +34,13 @@ const adminItems: NavItem[] = [
     { label: 'Support', icon: HeadphonesIcon, path: '/support' },
 ];
 
-const DashboardSidebar = () => {
+// Extracted sidebar content component for reuse in desktop and mobile views
+interface SidebarContentProps {
+    onNavigate?: () => void; // Optional callback when navigation occurs (for closing mobile sheet)
+    hideLogo?: boolean; // Optional flag to hide the logo section (for mobile sheet custom header)
+}
+
+const SidebarContent = ({ onNavigate, hideLogo = false }: SidebarContentProps) => {
     const location = useLocation();
     const [expandedMenus, setExpandedMenus] = useState<string[]>(['Create']);
 
@@ -56,6 +62,10 @@ const DashboardSidebar = () => {
             return item.children.some(child => isActive(child.path));
         }
         return false;
+    };
+
+    const handleNavigation = () => {
+        onNavigate?.();
     };
 
     const renderNavItem = (item: NavItem, isChild = false) => {
@@ -122,6 +132,7 @@ const DashboardSidebar = () => {
                 key={item.path || item.label}
                 to={item.path || '#'}
                 className={baseClasses}
+                onClick={handleNavigation}
             >
                 {content}
             </Link>
@@ -129,16 +140,18 @@ const DashboardSidebar = () => {
     };
 
     return (
-        <aside className="fixed left-0 top-0 h-screen w-64 bg-card border-r border-border/50 flex flex-col z-40">
+        <>
             {/* Logo */}
-            <div className="p-6 border-b border-border/50">
-                <Link to="/" className="flex items-center gap-2">
-                    <img src={KlipixLogo} alt="Klipix" className="w-9 h-9" />
-                    <span className="font-bold text-xl text-foreground">
-                        Klip<span className="gradient-text">ix</span>
-                    </span>
-                </Link>
-            </div>
+            {!hideLogo && (
+                <div className="p-6 border-b border-border/50">
+                    <Link to="/" className="flex items-center gap-2" onClick={handleNavigation}>
+                        <img src={KlipixLogo} alt="Klipix" className="w-9 h-9" />
+                        <span className="font-bold text-xl text-foreground">
+                            Klip<span className="gradient-text">ix</span>
+                        </span>
+                    </Link>
+                </div>
+            )}
 
             {/* Navigation */}
             <nav className="flex-1 p-4 space-y-6 overflow-y-auto">
@@ -153,6 +166,7 @@ const DashboardSidebar = () => {
                                 : 'text-muted-foreground hover-standard'
                             }
                         `}
+                        onClick={handleNavigation}
                     >
                         <LayoutDashboard className="w-4 h-4" />
                         Dashboard
@@ -176,6 +190,7 @@ const DashboardSidebar = () => {
                                     : 'text-muted-foreground hover-standard'
                                 }
                             `}
+                            onClick={handleNavigation}
                         >
                             <Sparkles className="w-4 h-4" />
                             Faceless Shorts
@@ -189,6 +204,7 @@ const DashboardSidebar = () => {
                                     : 'text-muted-foreground hover-standard'
                                 }
                             `}
+                            onClick={handleNavigation}
                         >
                             <Layers className="w-4 h-4" />
                             Series Shorts
@@ -207,6 +223,7 @@ const DashboardSidebar = () => {
                                 : 'text-muted-foreground hover-standard'
                             }
                         `}
+                        onClick={handleNavigation}
                     >
                         <FolderOpen className="w-4 h-4" />
                         Projects
@@ -233,8 +250,18 @@ const DashboardSidebar = () => {
                     {adminItems.map(item => renderNavItem(item))}
                 </div>
             </nav>
+        </>
+    );
+};
+
+const DashboardSidebar = () => {
+
+    return (
+        <aside className="hidden lg:flex fixed left-0 top-0 h-screen w-64 bg-card border-r border-border/50 flex-col z-40">
+            <SidebarContent />
         </aside>
     );
 };
 
+export { SidebarContent };
 export default DashboardSidebar;
