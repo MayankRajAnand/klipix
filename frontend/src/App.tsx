@@ -10,6 +10,7 @@ import SignUpPage from '@/routes/public/SignUpPage';
 import Dashboard from '@/routes/protected/Dashboard';
 import FacelessShorts from '@/routes/protected/create/FacelessShorts';
 import ScriptToVideo from '@/routes/protected/create/faceless/ScriptToVideo';
+import ScriptToVideoReview from '@/routes/protected/create/faceless/ScriptToVideoReview';
 import SplitVideo from '@/routes/protected/create/faceless/SplitVideo';
 import FakeTextStory from '@/routes/protected/create/faceless/FakeTextStory';
 import SeriesShorts from '@/routes/protected/create/SeriesShorts';
@@ -53,6 +54,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <ScriptToVideo />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/create/faceless/script-to-video/review"
+            element={
+              <ProtectedRoute>
+                <ScriptToVideoReview />
               </ProtectedRoute>
             }
           />
