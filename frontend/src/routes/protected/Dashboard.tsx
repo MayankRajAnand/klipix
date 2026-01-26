@@ -1,33 +1,27 @@
-import { useEffect } from 'react';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import CreateHero from '@/components/DashboardComponents/CreateHero';
 import PipelineStatus from '@/components/DashboardComponents/PipelineStatus';
 import RecentProjects from '@/components/DashboardComponents/RecentProjects';
 import { useAuth } from '@/context/AuthContext';
-import { useUserStore } from '@/stores/userStore';
-import { fetchUserCredits } from '@/services/userService';
+import { useUserCredits } from '@/hooks/useUserCredits';
+import { PageLoader } from '@/components/common/Loader';
 
 const Dashboard = () => {
     const { user } = useAuth();
-    const setCredits = useUserStore((state) => state.setCredits);
+    const { isLoading } = useUserCredits(user?.id);
 
     const getDisplayName = () => {
         const name = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'there';
         return name.split(' ')[0];
     };
 
-    // Fetch credits on mount
-    useEffect(() => {
-        const loadCredits = async () => {
-            if (user?.id) {
-                const userCredits = await fetchUserCredits(user.id);
-                if (userCredits !== null) {
-                    setCredits(userCredits);
-                }
-            }
-        };
-        loadCredits();
-    }, [user?.id, setCredits]);
+    if (isLoading) {
+        return (
+            <DashboardLayout>
+                <PageLoader text="Loading..." />
+            </DashboardLayout>
+        );
+    }
 
     return (
         <DashboardLayout>

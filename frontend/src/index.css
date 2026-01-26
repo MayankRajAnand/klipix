@@ -226,7 +226,24 @@
     text-wrap: balance;
   }
 
+  /* Custom Scrollbar */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
 
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: hsl(240 10% 12%);
+    border-radius: 10px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: hsl(263 70% 58% / 0.4);
+    border-radius: 10px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: hsl(263 70% 58% / 0.6);
+  }
 
   .hover-standard {
     @apply hover:bg-hover-highlight hover:text-foreground transition-colors;
